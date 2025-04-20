@@ -295,9 +295,6 @@ export default function ConnectionsGame() {
           <div>
             Attempts: {attempts}/{puzzle.maxAttempts}
           </div>
-          <div>
-            Solved: {solvedCategories.length}/{puzzle.categories.length}
-          </div>
         </div>
 
         {/* Solved categories */}
