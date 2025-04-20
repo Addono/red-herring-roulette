@@ -1,30 +1,40 @@
-# NYT Connections UI
+# Red Herring Roulette
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
-
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/adriaan-knapens-projects/v0-nyt-connections-ui)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/NyOsqtMUZUb)
+A word categorization puzzle game inspired by NYT Connections.
 
 ## Overview
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+Red Herring Roulette challenges players to group words into their correct categories. The game presents players with a set of words that need to be sorted into logical categories. Each category contains four related words, and it's your job to figure out the connections!
 
-## Deployment
+## How to Play
 
-Your project is live at:
+1. **Select Words**: Click on four words that you think belong to the same category.
+2. **Submit**: Click the submit button to check if your grouping is correct.
+3. **Solve Categories**: Successfully identify all categories to win the game.
+4. **Avoid Duplicates**: The game will warn you if you try to submit the same incorrect guess twice.
 
-**[https://vercel.com/adriaan-knapens-projects/v0-nyt-connections-ui](https://vercel.com/adriaan-knapens-projects/v0-nyt-connections-ui)**
+## Features
 
-## Build your app
+- **Word Shuffling**: Rearrange words with the shuffle button for a fresh perspective.
+- **Failed Guesses Tracking**: Keep track of your previous incorrect attempts.
+- **Visual Feedback**: Words that belong to solved categories are struck through in the failed guesses list.
+- **Deselect Option**: Clear your current selection with the deselect button.
 
-Continue building your app on:
+## Development
 
-**[https://v0.dev/chat/projects/NyOsqtMUZUb](https://v0.dev/chat/projects/NyOsqtMUZUb)**
+This project is built with:
+- React for the UI components
+- Cypress for end-to-end testing
 
-## How It Works
+## Testing
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+Run the Cypress test suite to verify functionality:
+
+```bash
+npm run cypress:open
+```
+
+The test suite includes:
+- Verification of game mechanics
+- Testing of the UI components
+- Validation of game logic like solving categories and handling failed guesses
