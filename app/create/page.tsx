@@ -70,6 +70,10 @@ export default function CreatePuzzle() {
         title: "URL Generated",
         description: "Your puzzle link is ready to share.",
       })
+      // Scroll to the bottom of the page
+      setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })
+      }, 0)
     } catch (error) {
       toast({
         title: "Error",
