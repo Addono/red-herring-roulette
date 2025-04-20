@@ -429,7 +429,7 @@ function ConnectionsGame() {
           </div>
         )}
       </div>
-      <Toaster toastOptions={{ className: "data-cy-toast" }} />
+      <Toaster />
     </div>
   )
 }
