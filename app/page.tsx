@@ -1,5 +1,6 @@
 "use client"
 
+import { Suspense } from "react"
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
@@ -36,7 +37,7 @@ interface WordItem {
   isVisible: boolean
 }
 
-export default function ConnectionsGame() {
+function ConnectionsGame() {
   const searchParams = useSearchParams()
   const puzzleParam = searchParams.get("puzzle")
 
@@ -376,5 +377,13 @@ export default function ConnectionsGame() {
       </div>
       <Toaster toastOptions={{ className: "data-cy-toast" }} />
     </div>
+  )
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ConnectionsGame />
+    </Suspense>
   )
 }
