@@ -233,32 +233,32 @@ function ConnectionsGame() {
 
     // Check if word is selected
     if (selectedWords.includes(word)) {
+      // Check if this word was part of a previous incorrect guess
+      const wasIncorrectlyGuessed = failedGuesses.some(guess => guess.includes(word))
+      
       return {
         solved: false,
         className: showCorrectAnimation
           ? "bg-green-200 border-green-500"
           : showIncorrectAnimation
             ? "bg-red-200 border-red-500"
-            : "bg-slate-200 border-slate-400",
+            : wasIncorrectlyGuessed
+              ? "bg-orange-100 border-orange-400" // Highlight previously incorrect words
+              : "bg-slate-200 border-slate-400",
         categoryName: null,
+        wasIncorrectlyGuessed,
       }
     }
 
-    // Check if word is part of a failed guess
-    const isInFailedGuess = failedGuesses.some(guess => guess.includes(word))
-    if (isInFailedGuess) {
-      return {
-        solved: false,
-        className: "bg-amber-50 hover:bg-amber-100 border-amber-200",
-        categoryName: null,
-      }
-    }
-
+    // Check if word was part of a previous incorrect guess (but not currently selected)
+    const wasIncorrectlyGuessed = failedGuesses.some(guess => guess.includes(word))
+    
     // Normal word
     return {
       solved: false,
-      className: "bg-white hover:bg-slate-100",
+      className: `bg-white hover:bg-slate-100 ${wasIncorrectlyGuessed ? "border-orange-200" : ""}`,
       categoryName: null,
+      wasIncorrectlyGuessed,
     }
   }
 
@@ -406,7 +406,7 @@ function ConnectionsGame() {
 
         {/* Failed guesses */}
         {failedGuesses.length > 0 && (
-          <div className="space-y-2 mt-4" data-cy="incorrect-guesses">
+          <div className="space-y-2 mt-4">
             <h2 className="text-lg font-bold">Incorrect Guesses</h2>
             {failedGuesses.map((guess, index) => (
               <div key={`failed-guess-${index}`} className="flex gap-2" data-cy="failed-guess">

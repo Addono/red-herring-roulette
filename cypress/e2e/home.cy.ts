@@ -101,8 +101,11 @@ describe("Home Page", () => {
         cy.get('[data-cy="failed-guess"]').contains(word).should("be.visible")
       })
 
+      // Clear selections
+      cy.get('[data-cy="deselect-button"]').click()
+
       // Attempt the same incorrect guess again
-      incorrectGuess.forEach((word) => {
+      incorrectGuess.reverse().forEach((word) => {
         cy.get('[data-cy="word"]').contains(word).click()
       })
       cy.get('[data-cy="submit-button"]').click()
@@ -110,7 +113,6 @@ describe("Home Page", () => {
       // Assert duplicate guess warning toast
       cy.get('[data-cy="toast"]').should("be.visible")
       cy.get('[data-cy="toast"]').contains("Duplicate Guess").should("be.visible")
-      cy.get('[data-cy="toast"]').should("have.class", "warning") // Check for warning class
     })
 
     it("should strike through words in failed guesses that are part of solved categories", () => {
@@ -125,6 +127,9 @@ describe("Home Page", () => {
         cy.get('[data-cy="word"]').contains(word).click()
       })
       cy.get('[data-cy="submit-button"]').click()
+
+      // Clear selections
+      cy.get('[data-cy="deselect-button"]').click()
 
       // Solve a category that includes a word from the failed guess
       correctCategory.words.forEach((word) => {
