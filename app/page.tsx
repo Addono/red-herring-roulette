@@ -52,6 +52,7 @@ function ConnectionsGame() {
   const [isAnimating, setIsAnimating] = useState(false)
   const [showCorrectAnimation, setShowCorrectAnimation] = useState(false)
   const [showIncorrectAnimation, setShowIncorrectAnimation] = useState(false)
+  const [failedGuesses, setFailedGuesses] = useState<string[][]>([])
 
   // Load puzzle from URL or use default
   useEffect(() => {
@@ -155,6 +156,20 @@ function ConnectionsGame() {
         }
       }, 600)
     } else {
+      // Prevent duplicate incorrect guesses
+      const isDuplicateGuess = failedGuesses.some(
+        (guess) => guess.sort().join(",") === selectedWords.sort().join(",")
+      )
+      if (isDuplicateGuess) {
+        toast({
+          title: "Duplicate Guess",
+          description: "You've already made this incorrect guess.",
+          variant: "default",
+        })
+        setIsAnimating(false)
+        return
+      }
+
       // Show incorrect animation
       setShowIncorrectAnimation(true)
 
@@ -162,6 +177,9 @@ function ConnectionsGame() {
       setTimeout(() => {
         // Increment attempts
         setAttempts(attempts + 1)
+
+        // Add to failed guesses
+        setFailedGuesses([...failedGuesses, selectedWords])
 
         // Show toast
         toast({
@@ -197,6 +215,7 @@ function ConnectionsGame() {
     setIsAnimating(false)
     setShowCorrectAnimation(false)
     setShowIncorrectAnimation(false)
+    setFailedGuesses([])
     initializeGame()
   }
 
@@ -221,6 +240,16 @@ function ConnectionsGame() {
           : showIncorrectAnimation
             ? "bg-red-200 border-red-500"
             : "bg-slate-200 border-slate-400",
+        categoryName: null,
+      }
+    }
+
+    // Check if word is part of a failed guess
+    const isInFailedGuess = failedGuesses.some(guess => guess.includes(word))
+    if (isInFailedGuess) {
+      return {
+        solved: false,
+        className: "bg-amber-50 hover:bg-amber-100 border-amber-200",
         categoryName: null,
       }
     }
@@ -372,6 +401,31 @@ function ConnectionsGame() {
                 Play Again
               </Button>
             </Card>
+          </div>
+        )}
+
+        {/* Failed guesses */}
+        {failedGuesses.length > 0 && (
+          <div className="space-y-2 mt-4" data-cy="incorrect-guesses">
+            <h2 className="text-lg font-bold">Incorrect Guesses</h2>
+            {failedGuesses.map((guess, index) => (
+              <div key={`failed-guess-${index}`} className="flex gap-2" data-cy="failed-guess">
+                {guess.map((word) => {
+                  const wordItem = wordItems.find((item) => item.word === word)
+                  const isSolved = wordItem && solvedCategories.includes(wordItem.categoryIndex)
+                  return (
+                    <span
+                      key={word}
+                      className={`px-2 py-1 border rounded ${
+                        isSolved ? "line-through text-gray-400" : "text-black"
+                      }`}
+                    >
+                      {word}
+                    </span>
+                  )
+                })}
+              </div>
+            ))}
           </div>
         )}
       </div>

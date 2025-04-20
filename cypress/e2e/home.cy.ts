@@ -84,4 +84,56 @@ describe("Home Page", () => {
         .should("be.visible");
     });
   });
+
+  describe("Failed Guesses", () => {
+    it("should display failed guesses and warn on duplicate incorrect guesses", () => {
+      const incorrectGuess = ["Apple", "Tiger", "Canada", "Soccer"]
+
+      // Make an incorrect guess
+      incorrectGuess.forEach((word) => {
+        cy.get('[data-cy="word"]').contains(word).click()
+      })
+      cy.get('[data-cy="submit-button"]').click()
+
+      // Assert failed guess is displayed
+      cy.get('[data-cy="failed-guess"]').should("be.visible")
+      incorrectGuess.forEach((word) => {
+        cy.get('[data-cy="failed-guess"]').contains(word).should("be.visible")
+      })
+
+      // Attempt the same incorrect guess again
+      incorrectGuess.forEach((word) => {
+        cy.get('[data-cy="word"]').contains(word).click()
+      })
+      cy.get('[data-cy="submit-button"]').click()
+
+      // Assert duplicate guess warning toast
+      cy.get('[data-cy="toast"]').should("be.visible")
+      cy.get('[data-cy="toast"]').contains("Duplicate Guess").should("be.visible")
+      cy.get('[data-cy="toast"]').should("have.class", "warning") // Check for warning class
+    })
+
+    it("should strike through words in failed guesses that are part of solved categories", () => {
+      const incorrectGuess = ["Apple", "Tiger", "Canada", "Soccer"]
+      const correctCategory = {
+        name: "Fruits",
+        words: ["Apple", "Banana", "Orange", "Strawberry"],
+      }
+
+      // Make an incorrect guess
+      incorrectGuess.forEach((word) => {
+        cy.get('[data-cy="word"]').contains(word).click()
+      })
+      cy.get('[data-cy="submit-button"]').click()
+
+      // Solve a category that includes a word from the failed guess
+      correctCategory.words.forEach((word) => {
+        cy.get('[data-cy="word"]').contains(word).click()
+      })
+      cy.get('[data-cy="submit-button"]').click()
+
+      // Assert strikethrough for solved word in failed guesses
+      cy.get('[data-cy="failed-guess"]').contains("Apple").should("have.css", "text-decoration-line", "line-through")
+    })
+  })
 });
