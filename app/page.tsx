@@ -251,12 +251,9 @@ export default function ConnectionsGame() {
                 <DialogDescription>
                   Find groups of four words that share a common theme.
                   <br />
-                  <br />
                   Select four words and submit your guess.
                   <br />
-                  <br />
                   You have {puzzle.maxAttempts} incorrect attempts before the game ends.
-                  <br />
                   <br />
                   Categories range from easy to hard:
                   <ul className="list-disc pl-5 mt-2">
@@ -272,7 +269,7 @@ export default function ConnectionsGame() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="outline" size="icon" onClick={resetGame}>
+                  <Button variant="outline" size="icon" onClick={resetGame} data-cy="shuffle-button">
                     <Shuffle className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
@@ -300,7 +297,7 @@ export default function ConnectionsGame() {
         {/* Solved categories */}
         <div className="space-y-2 mb-4">
           {solvedCategories.map((categoryIndex) => (
-            <div key={`solved-${categoryIndex}`} className="transform transition-all duration-500 animate-fade-in-down">
+            <div key={`solved-${categoryIndex}`} className="transform transition-all duration-500 animate-fade-in-down" data-cy="solved-category">
               <Card className={`p-3 ${puzzle.categories[categoryIndex].color}`}>
                 <div className="font-bold">{puzzle.categories[categoryIndex].name}</div>
                 <div className="text-sm">{puzzle.categories[categoryIndex].words.join(", ")}</div>
@@ -330,6 +327,7 @@ export default function ConnectionsGame() {
                     className={`h-16 w-full font-medium border-2 transition-colors duration-300 ${status.className} ${
                       status.solved ? "cursor-default" : "cursor-pointer"
                     }`}
+                    data-cy="word"
                     onClick={() => !status.solved && toggleWordSelection(item.word)}
                     disabled={status.solved || isAnimating}
                   >
@@ -346,6 +344,7 @@ export default function ConnectionsGame() {
             className="flex-1 transition-transform hover:scale-[1.02] active:scale-[0.98]"
             onClick={() => setSelectedWords([])}
             disabled={selectedWords.length === 0 || gameOver || isAnimating}
+            data-cy="deselect-button"
           >
             Deselect All
           </Button>
@@ -353,6 +352,7 @@ export default function ConnectionsGame() {
             className="flex-1 transition-transform hover:scale-[1.02] active:scale-[0.98]"
             onClick={checkSelection}
             disabled={selectedWords.length !== 4 || gameOver || isAnimating}
+            data-cy="submit-button"
           >
             Submit
           </Button>
@@ -360,7 +360,7 @@ export default function ConnectionsGame() {
 
         {/* Game over message */}
         {gameOver && (
-          <div className="animate-fade-in-up">
+          <div className="animate-fade-in-up" data-cy="solution">
             <Card className={`p-4 mt-4 ${gameWon ? "bg-green-100" : "bg-red-100"}`}>
               <h2 className="text-lg font-bold mb-2">{gameWon ? "Congratulations!" : "Game Over"}</h2>
               <p>{gameWon ? "You've successfully found all categories!" : "You've used all your attempts."}</p>
@@ -374,7 +374,7 @@ export default function ConnectionsGame() {
           </div>
         )}
       </div>
-      <Toaster />
+      <Toaster toastOptions={{ className: "data-cy-toast" }} />
     </div>
   )
 }
