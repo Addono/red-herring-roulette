@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card } from "@/components/ui/card"
 import { Toaster } from "@/components/ui/toaster"
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/components/ui/use-toast"
 import { ArrowLeft, Copy } from "lucide-react"
 import { encodePuzzle, DEFAULT_PUZZLE, type PuzzleData } from "@/lib/puzzle-utils"
 
