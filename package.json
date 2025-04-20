@@ -6,7 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "cypress:install": "cypress install",
+    "test:e2e": "cypress run",
+    "test:e2e:dev": "start-server-and-test start http://localhost:3000 cypress:run"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -48,7 +53,7 @@
     "next": "15.2.4",
     "next-themes": "^0.4.4",
     "react": "^19",
-    "react-day-picker": "8.10.1",
+    "react-day-picker": "9.6.7",
     "react-dom": "^19",
     "react-hook-form": "^7.54.1",
     "react-resizable-panels": "^2.1.7",
@@ -56,14 +61,17 @@
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
-    "vaul": "^0.9.6",
+    "vaul": "^1.1.2",
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@testing-library/cypress": "^10.0.1",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cypress": "^14.3.1",
     "postcss": "^8",
+    "start-server-and-test": "^2.0.3",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
   }

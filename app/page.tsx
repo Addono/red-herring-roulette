@@ -236,7 +236,7 @@ export default function ConnectionsGame() {
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-slate-50">
       <div className="w-full max-w-md">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold">Connections</h1>
+          <h1 className="text-2xl font-bold">Red Herring Roulette</h1>
           <div className="flex gap-2">
             <Dialog>
               <DialogTrigger asChild>
