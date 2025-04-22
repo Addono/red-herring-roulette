@@ -32,7 +32,7 @@ This project is built with:
 Run the Cypress test suite to verify functionality:
 
 ```bash
-npm run cypress:open
+pnpm run cypress:run
 ```
 
 The test suite includes:
