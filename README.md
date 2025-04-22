@@ -13,19 +13,18 @@ Red Herring Roulette challenges players to group words into their correct catego
 1. **Select Words**: Click on four words that you think belong to the same category.
 2. **Submit**: Click the submit button to check if your grouping is correct.
 3. **Solve Categories**: Successfully identify all categories to win the game.
-4. **Avoid Duplicates**: The game will warn you if you try to submit the same incorrect guess twice.
 
 ## Features
 
 - **Word Shuffling**: Rearrange words with the shuffle button for a fresh perspective.
 - **Failed Guesses Tracking**: Keep track of your previous incorrect attempts.
-- **Visual Feedback**: Words that belong to solved categories are struck through in the failed guesses list.
-- **Deselect Option**: Clear your current selection with the deselect button.
+- **Custom Puzzles**: Create and share custom puzzles
 
 ## Development
 
 This project is built with:
 - React for the UI components
+- TypeScript for type-safety everywhere
 - Cypress for end-to-end testing
 
 ## Testing
