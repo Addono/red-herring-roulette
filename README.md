@@ -2,7 +2,7 @@
 
 A word categorization puzzle game inspired by NYT Connections.
 
-<img width="1136" alt="image" src="https://github.com/user-attachments/assets/246731f2-5524-40c5-aa84-6bf654541f65" />
+<img width="1136" alt="image" src="https://github.com/user-attachments/assets/f6d3e79c-8cc5-4f4b-92df-86af149a5736" />
 
 ## Overview
 
