@@ -2,6 +2,8 @@
 
 A word categorization puzzle game inspired by NYT Connections.
 
+<img width="1136" alt="image" src="https://github.com/user-attachments/assets/246731f2-5524-40c5-aa84-6bf654541f65" />
+
 ## Overview
 
 Red Herring Roulette challenges players to group words into their correct categories. The game presents players with a set of words that need to be sorted into logical categories. Each category contains four related words, and it's your job to figure out the connections!
