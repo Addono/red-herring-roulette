@@ -336,7 +336,12 @@ function ConnectionsGame() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="outline" size="icon" onClick={resetGame} data-cy="shuffle-button">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={resetGame}
+                    data-cy="shuffle-button"
+                  >
                     <Shuffle className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
@@ -349,16 +354,18 @@ function ConnectionsGame() {
             <EditPuzzleDialog puzzleParam={puzzleParam} isLoading={isLoading} />
           </div>
         </div>
-        
+
         {/* Display puzzle title if available */}
-        {puzzle.title && (
-          <div className="mb-4 text-center">
-            <h2 className="text-xl font-semibold" data-cy="puzzle-title">{puzzle.title}</h2>
-          </div>
-        )}
 
         {/* Game status */}
         <div className="flex justify-between mb-4">
+          {puzzle.title && (
+            <div className="mb-4 text-center">
+              <h2 className="text-xl font-semibold" data-cy="puzzle-title">
+                {puzzle.title}
+              </h2>
+            </div>
+          )}
           <div>
             Attempts: {attempts}/{puzzle.maxAttempts}
           </div>
@@ -367,10 +374,18 @@ function ConnectionsGame() {
         {/* Solved categories */}
         <div className="space-y-2 mb-4">
           {solvedCategories.map((categoryIndex) => (
-            <div key={`solved-${categoryIndex}`} className="transform transition-all duration-500 animate-fade-in-down" data-cy="solved-category">
+            <div
+              key={`solved-${categoryIndex}`}
+              className="transform transition-all duration-500 animate-fade-in-down"
+              data-cy="solved-category"
+            >
               <Card className={`p-3 ${puzzle.categories[categoryIndex].color}`}>
-                <div className="font-bold">{puzzle.categories[categoryIndex].name}</div>
-                <div className="text-sm">{puzzle.categories[categoryIndex].words.join(", ")}</div>
+                <div className="font-bold">
+                  {puzzle.categories[categoryIndex].name}
+                </div>
+                <div className="text-sm">
+                  {puzzle.categories[categoryIndex].words.join(", ")}
+                </div>
               </Card>
             </div>
           ))}
@@ -381,30 +396,41 @@ function ConnectionsGame() {
           {wordItems
             .filter((item) => item.isVisible)
             .map((item) => {
-              const status = getWordStatus(item.word)
+              const status = getWordStatus(item.word);
               return (
                 <div
                   key={item.id}
                   className={`
                     transition-all duration-300 transform
-                    ${selectedWords.includes(item.word) && showCorrectAnimation ? "animate-pulse-once" : ""}
-                    ${selectedWords.includes(item.word) && showIncorrectAnimation ? "animate-shake" : ""}
+                    ${
+                      selectedWords.includes(item.word) && showCorrectAnimation
+                        ? "animate-pulse-once"
+                        : ""
+                    }
+                    ${
+                      selectedWords.includes(item.word) &&
+                      showIncorrectAnimation
+                        ? "animate-shake"
+                        : ""
+                    }
                     hover:scale-105 active:scale-95
                   `}
                 >
                   <Button
                     variant="outline"
-                    className={`h-16 w-full font-medium border-2 transition-colors duration-300 ${status.className} ${
-                      status.solved ? "cursor-default" : "cursor-pointer"
-                    }`}
+                    className={`h-16 w-full font-medium border-2 transition-colors duration-300 ${
+                      status.className
+                    } ${status.solved ? "cursor-default" : "cursor-pointer"}`}
                     data-cy="word"
-                    onClick={() => !status.solved && toggleWordSelection(item.word)}
+                    onClick={() =>
+                      !status.solved && toggleWordSelection(item.word)
+                    }
                     disabled={status.solved || isAnimating}
                   >
                     {item.word}
                   </Button>
                 </div>
-              )
+              );
             })}
         </div>
 
@@ -431,18 +457,31 @@ function ConnectionsGame() {
         {/* Game over message */}
         {gameOver && (
           <div className="animate-fade-in-up" data-cy="solution">
-            <Card className={`p-4 mt-4 ${gameWon ? "bg-green-100" : "bg-red-100"}`}>
-              <h2 className="text-lg font-bold mb-2">{gameWon ? "Congratulations!" : "Game Over"}</h2>
-              <p>{gameWon ? "You've successfully found all categories!" : "You've used all your attempts."}</p>
-              
+            <Card
+              className={`p-4 mt-4 ${gameWon ? "bg-green-100" : "bg-red-100"}`}
+            >
+              <h2 className="text-lg font-bold mb-2">
+                {gameWon ? "Congratulations!" : "Game Over"}
+              </h2>
+              <p>
+                {gameWon
+                  ? "You've successfully found all categories!"
+                  : "You've used all your attempts."}
+              </p>
+
               {/* Show hidden message if available and game was won */}
               {gameWon && puzzle.hiddenMessage && (
-                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md" data-cy="hidden-message">
-                  <p className="text-sm font-medium text-yellow-800">Hidden Message:</p>
+                <div
+                  className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md"
+                  data-cy="hidden-message"
+                >
+                  <p className="text-sm font-medium text-yellow-800">
+                    Hidden Message:
+                  </p>
                   <p className="mt-1 text-yellow-900">{puzzle.hiddenMessage}</p>
                 </div>
               )}
-              
+
               <Button
                 className="w-full mt-3 transition-transform hover:scale-[1.02] active:scale-[0.98]"
                 onClick={resetGame}
@@ -458,10 +497,16 @@ function ConnectionsGame() {
           <div className="space-y-2 mt-4">
             <h2 className="text-lg font-bold">Incorrect Guesses</h2>
             {failedGuesses.map((guess, index) => (
-              <div key={`failed-guess-${index}`} className="flex gap-2" data-cy="failed-guess">
+              <div
+                key={`failed-guess-${index}`}
+                className="flex gap-2"
+                data-cy="failed-guess"
+              >
                 {guess.map((word) => {
-                  const wordItem = wordItems.find((item) => item.word === word)
-                  const isSolved = wordItem && solvedCategories.includes(wordItem.categoryIndex)
+                  const wordItem = wordItems.find((item) => item.word === word);
+                  const isSolved =
+                    wordItem &&
+                    solvedCategories.includes(wordItem.categoryIndex);
                   return (
                     <span
                       key={word}
@@ -471,7 +516,7 @@ function ConnectionsGame() {
                     >
                       {word}
                     </span>
-                  )
+                  );
                 })}
               </div>
             ))}
@@ -480,7 +525,7 @@ function ConnectionsGame() {
       </div>
       <Toaster />
     </div>
-  )
+  );
 }
 
 export default function Page() {
