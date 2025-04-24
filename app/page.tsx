@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dialog"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { decodePuzzle, DEFAULT_PUZZLE } from "@/lib/puzzle-utils"
+import { GameHelp } from "@/components/molecule/game-help"
 
 // EditPuzzleDialog component
 function EditPuzzleDialog({ puzzleParam, isLoading }: { puzzleParam: string | null, isLoading: boolean }) {
@@ -339,33 +340,7 @@ function ConnectionsGame() {
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold">Red Herring Roulette</h1>
           <div className="flex gap-2">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <HelpCircle className="h-4 w-4" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>How to Play</DialogTitle>
-                </DialogHeader>
-                <DialogDescription>
-                  Find groups of four words that share a common theme.
-                  <br />
-                  Select four words and submit your guess.
-                  <br />
-                  You have {puzzle.maxAttempts} incorrect attempts before the game ends.
-                  <br />
-                  Categories range from easy to hard:
-                  <ul className="list-disc pl-5 mt-2">
-                    <li className="text-yellow-600">Yellow - Easiest</li>
-                    <li className="text-green-600">Green - Easy</li>
-                    <li className="text-blue-600">Blue - Medium</li>
-                    <li className="text-purple-600">Purple - Hard</li>
-                  </ul>
-                </DialogDescription>
-              </DialogContent>
-            </Dialog>
+            <GameHelp maxAttempts={puzzle.maxAttempts} />
 
             <TooltipProvider>
               <Tooltip>

@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card"
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/components/ui/use-toast"
 import { ArrowLeft, Copy } from "lucide-react"
+import { GameHelp } from "@/components/molecule/game-help"
 import { encodePuzzle, decodePuzzle, DEFAULT_PUZZLE, type PuzzleData } from "@/lib/puzzle-utils"
 
 // Fixed category colors by difficulty
@@ -183,6 +184,9 @@ export default function CreatePuzzle() {
               </Button>
             </Link>
             <h1 className="text-2xl font-bold">{isEditing ? "Edit Puzzle" : "Create Puzzle"}</h1>
+          </div>
+          <div>
+            <GameHelp maxAttempts={puzzle.maxAttempts} />
           </div>
         </div>
 
