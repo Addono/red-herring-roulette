@@ -79,6 +79,55 @@ describe("Create Page", () => {
       // The hidden message should not be visible yet
       cy.get('[data-cy="hidden-message"]').should("not.exist");
     });
+
+    it("should support unicode characters and emojis in titles and words", () => {
+      // Fill out puzzle title and hidden message with emojis
+      const puzzleTitle = "🎮 Gaming Puzzle 🎲";
+      const hiddenMessage = "You solved it! 🎉👏";
+      
+      cy.get('[data-cy="puzzle-title"]').type(puzzleTitle);
+      cy.get('[data-cy="hidden-message"]').type(hiddenMessage);
+      
+      // Fill out category names with unicode characters
+      cy.get('input[id="category-0-name"]').clear().type("🍕 Food");
+      cy.get('input[id="category-1-name"]').clear().type("🎬 Movies");
+      cy.get('input[id="category-2-name"]').clear().type("🎵 Music");
+      cy.get('input[id="category-3-name"]').clear().type("📚 Books");
+
+      // Fill out category words with emoji combinations
+      const categories = [
+        ["🍔 Burger", "🍦 Ice Cream", "🍫 Chocolate", "🥤 Soda"],
+        ["Star Wars ⭐", "Jurassic Park 🦖", "Avengers 🦸‍♂️", "Titanic 🚢"],
+        ["Rock 🎸", "Jazz 🎷", "Pop 🎤", "Classical 🎻"],
+        ["Harry Potter ⚡", "Lord of Rings 💍", "Dune 🏜️", "1984 👁️"]
+      ];
+
+      categories.forEach((words, catIndex) => {
+        words.forEach((word, wordIndex) => {
+          cy.get(`input[placeholder="Word ${wordIndex + 1}"]`).eq(catIndex).clear().type(word);
+        });
+      });
+
+      // Generate URL
+      cy.contains("Generate Puzzle URL").click();
+
+      // Assert URL is generated
+      cy.contains("Your Puzzle URL").should("be.visible");
+      cy.get("div.bg-slate-100").should("be.visible");
+      
+      // Play the puzzle
+      cy.contains("Play This Puzzle").click();
+      
+      // Verify title is displayed with emojis intact
+      cy.get('[data-cy="puzzle-title"]').should("be.visible");
+      cy.get('[data-cy="puzzle-title"]').should("contain", puzzleTitle);
+      
+      // Verify words with emojis are displayed correctly
+      cy.get('[data-cy="word"]').contains("🍔 Burger").should("be.visible");
+      cy.get('[data-cy="word"]').contains("Star Wars ⭐").should("be.visible");
+      cy.get('[data-cy="word"]').contains("Rock 🎸").should("be.visible");
+      cy.get('[data-cy="word"]').contains("Harry Potter ⚡").should("be.visible");
+    });
   });
 
   describe("Editing an existing puzzle", () => {

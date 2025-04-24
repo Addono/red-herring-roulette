@@ -23,7 +23,7 @@ export const DEFAULT_PUZZLE: PuzzleData = {
   categories: [
     {
       name: "Fruits",
-      words: ["Apple", "Banana", "Orange", "Strawberry"],
+      words: ["Apple", "Banana", "Orange", "Pear"],
       color: CATEGORY_COLORS[0],
     },
     {
@@ -57,13 +57,16 @@ export function encodePuzzle(puzzle: PuzzleData): string {
   try {
     // Convert to compact format
     const compactPuzzle: CompactPuzzle = {
-      c: puzzle.categories.map((category) => [category.name, ...category.words]),
+      c: puzzle.categories.map((category) => 
+        [category.name, category.words[0], category.words[1], category.words[2], category.words[3]] as [string, string, string, string, string]
+      ),
       t: puzzle.title,
       m: puzzle.hiddenMessage,
     }
 
     const jsonString = JSON.stringify(compactPuzzle)
-    return btoa(jsonString) // Direct base64 encoding without URI encoding
+    // Use encodeURIComponent to handle unicode characters before base64 encoding
+    return btoa(encodeURIComponent(jsonString))
   } catch (error) {
     console.error("Error encoding puzzle:", error)
     throw new Error("Failed to encode puzzle data")
@@ -73,7 +76,8 @@ export function encodePuzzle(puzzle: PuzzleData): string {
 // Decode puzzle data from base64
 export function decodePuzzle(encoded: string): PuzzleData {
   try {
-    const jsonString = atob(encoded) // Direct base64 decoding without URI decoding
+    // Use decodeURIComponent after base64 decoding to handle unicode characters
+    const jsonString = decodeURIComponent(atob(encoded))
     const compactPuzzle = JSON.parse(jsonString) as CompactPuzzle
 
     // Convert from compact format back to full format
