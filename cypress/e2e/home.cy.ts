@@ -140,6 +140,34 @@ describe("Home Page", () => {
       // Assert strikethrough for solved word in failed guesses
       cy.get('[data-cy="failed-guess"]').contains("Apple").should("have.css", "text-decoration-line", "line-through")
     })
+
+    it("should show a hint when user is one word off from a category", () => {
+      // Setup: Get three words from the "Fruits" category and one different word
+      const fruitWords = ["Apple", "Banana", "Orange"]
+      const nonFruitWord = "Tiger" // from Animals category
+      
+      // Make a "one off" incorrect guess (3 fruits + 1 animal)
+      const oneOffGuess = [...fruitWords, nonFruitWord]
+      
+      // Click on the words
+      oneOffGuess.forEach((word) => {
+        cy.get('[data-cy="word"]').contains(word).click()
+      })
+      
+      // Submit the guess
+      cy.get('[data-cy="submit-button"]').click()
+      
+      // Assert "one off" hint appears
+      cy.get('[data-cy="toast"]').should("be.visible")
+      cy.get('[data-cy="toast"]').contains("Almost There!").should("be.visible")
+      cy.get('[data-cy="toast"]').contains("You're just one word off").should("be.visible")
+      
+      // Assert failed guess is displayed
+      cy.get('[data-cy="failed-guess"]').should("be.visible")
+      oneOffGuess.forEach((word) => {
+        cy.get('[data-cy="failed-guess"]').contains(word).should("be.visible")
+      })
+    });
   })
 
   describe("Puzzle Editing", () => {

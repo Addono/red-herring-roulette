@@ -19,6 +19,24 @@ const CATEGORY_COLORS = [
   "bg-purple-100 border-purple-500 text-purple-800", // Purple - Hard
 ]
 
+// Check if selected words are "one off" from a category (3 out of 4 words from the same category)
+export function checkOneOff(selectedWords: string[], categories: Category[]): { isOneOff: boolean; categoryName: string } | null {
+  for (const category of categories) {
+    // Count how many selected words are in this category
+    const wordsInCategory = selectedWords.filter(word => category.words.includes(word))
+    
+    // If exactly 3 out of 4 words are from the same category
+    if (wordsInCategory.length === 3) {
+      return {
+        isOneOff: true,
+        categoryName: category.name
+      }
+    }
+  }
+  
+  return null
+}
+
 export const DEFAULT_PUZZLE: PuzzleData = {
   categories: [
     {

@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/components/ui/use-toast"
 import { Plus, Shuffle, X } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { decodePuzzle, DEFAULT_PUZZLE } from "@/lib/puzzle-utils"
+import { decodePuzzle, DEFAULT_PUZZLE, checkOneOff } from "@/lib/puzzle-utils"
 import { GameHelp } from "@/components/molecule/game-help"
 
 // EditPuzzleDialog component
@@ -201,7 +201,7 @@ function ConnectionsGame() {
         // Show toast
         toast({
           title: "Correct!",
-          description: `You found the ${puzzle.categories[categoryIndex].name} category.`,
+          description: `You found the "${puzzle.categories[categoryIndex].name}" category.`,
         })
 
         // Reset animation state
@@ -233,6 +233,9 @@ function ConnectionsGame() {
         return
       }
 
+      // Check if three words belong to the same category (one off)
+      const oneOffResult = checkOneOff(selectedWords, puzzle.categories)
+
       // Show incorrect animation
       setShowIncorrectAnimation(true)
 
@@ -244,12 +247,20 @@ function ConnectionsGame() {
         // Add to failed guesses
         setFailedGuesses([...failedGuesses, selectedWords])
 
-        // Show toast
-        toast({
-          title: "Incorrect",
-          description: "These words don't form a category.",
-          variant: "destructive",
-        })
+        // Show toast with one-off message if applicable
+        if (oneOffResult && oneOffResult.isOneOff) {
+          toast({
+            title: "Almost There!",
+            description: `You're just one word off.`,
+            variant: "default",
+          })
+        } else {
+          toast({
+            title: "Incorrect",
+            description: "These words don't form a category.",
+            variant: "destructive",
+          })
+        }
 
         // Reset animation state
         setShowIncorrectAnimation(false)
