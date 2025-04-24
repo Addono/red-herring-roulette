@@ -7,6 +7,8 @@ export interface Category {
 export interface PuzzleData {
   categories: Category[]
   maxAttempts: number
+  title?: string
+  hiddenMessage?: string
 }
 
 // Fixed category colors by difficulty
@@ -46,6 +48,8 @@ export const DEFAULT_PUZZLE: PuzzleData = {
 // Compact format for encoding
 interface CompactPuzzle {
   c: [string, string, string, string, string][] // [categoryName, word1, word2, word3, word4][]
+  t?: string // title
+  m?: string // hidden message
 }
 
 // Encode puzzle data to base64 using compact format
@@ -54,6 +58,8 @@ export function encodePuzzle(puzzle: PuzzleData): string {
     // Convert to compact format
     const compactPuzzle: CompactPuzzle = {
       c: puzzle.categories.map((category) => [category.name, ...category.words]),
+      t: puzzle.title,
+      m: puzzle.hiddenMessage,
     }
 
     const jsonString = JSON.stringify(compactPuzzle)
@@ -83,6 +89,8 @@ export function decodePuzzle(encoded: string): PuzzleData {
     return {
       categories,
       maxAttempts: 4, // Always fixed at 4
+      title: compactPuzzle.t,
+      hiddenMessage: compactPuzzle.m,
     }
   } catch (error) {
     console.error("Error decoding puzzle:", error)

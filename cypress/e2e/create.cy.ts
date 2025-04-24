@@ -9,6 +9,10 @@ describe("Create Page", () => {
     });
 
     it("should allow filling out the form and generating a puzzle URL", () => {
+      // Fill out puzzle title and hidden message
+      cy.get('[data-cy="puzzle-title"]').type("Movie Night Challenge");
+      cy.get('[data-cy="hidden-message"]').type("You're a true film buff!");
+      
       // Fill out category names
       cy.get('input[id="category-0-name"]').clear().type("Colors");
       cy.get('input[id="category-1-name"]').clear().type("Planets");
@@ -35,6 +39,45 @@ describe("Create Page", () => {
       // Assert URL is generated
       cy.contains("Your Puzzle URL").should("be.visible");
       cy.get("div.bg-slate-100").should("be.visible");
+    });
+
+    it("should allow playing a created puzzle with title and hidden message", () => {
+      // Fill out puzzle title and hidden message
+      const puzzleTitle = "Movie Night Challenge";
+      const hiddenMessage = "You're a true film buff!";
+      
+      cy.get('[data-cy="puzzle-title"]').type(puzzleTitle);
+      cy.get('[data-cy="hidden-message"]').type(hiddenMessage);
+      
+      // Fill out category names and words (minimal setup for test)
+      cy.get('input[id="category-0-name"]').clear().type("Colors");
+      cy.get('input[id="category-1-name"]').clear().type("Planets");
+      cy.get('input[id="category-2-name"]').clear().type("Movies");
+      cy.get('input[id="category-3-name"]').clear().type("Books");
+
+      const categories = [
+        ["Red", "Blue", "Green", "Yellow"],
+        ["Mars", "Venus", "Jupiter", "Mercury"],
+        ["Titanic", "Avatar", "Inception", "Jaws"],
+        ["1984", "Dune", "It", "Hobbit"]
+      ];
+
+      categories.forEach((words, catIndex) => {
+        words.forEach((word, wordIndex) => {
+          cy.get(`input[placeholder="Word ${wordIndex + 1}"]`).eq(catIndex).clear().type(word);
+        });
+      });
+
+      // Generate URL and play
+      cy.contains("Generate Puzzle URL").click();
+      cy.contains("Play This Puzzle").click();
+
+      // Verify title is displayed on the game page
+      cy.get('[data-cy="puzzle-title"]').should("be.visible");
+      cy.get('[data-cy="puzzle-title"]').should("contain", puzzleTitle);
+      
+      // The hidden message should not be visible yet
+      cy.get('[data-cy="hidden-message"]').should("not.exist");
     });
   });
 

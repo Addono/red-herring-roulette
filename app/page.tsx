@@ -383,6 +383,13 @@ function ConnectionsGame() {
             <EditPuzzleDialog puzzleParam={puzzleParam} isLoading={isLoading} />
           </div>
         </div>
+        
+        {/* Display puzzle title if available */}
+        {puzzle.title && (
+          <div className="mb-4 text-center">
+            <h2 className="text-xl font-semibold" data-cy="puzzle-title">{puzzle.title}</h2>
+          </div>
+        )}
 
         {/* Game status */}
         <div className="flex justify-between mb-4">
@@ -461,6 +468,15 @@ function ConnectionsGame() {
             <Card className={`p-4 mt-4 ${gameWon ? "bg-green-100" : "bg-red-100"}`}>
               <h2 className="text-lg font-bold mb-2">{gameWon ? "Congratulations!" : "Game Over"}</h2>
               <p>{gameWon ? "You've successfully found all categories!" : "You've used all your attempts."}</p>
+              
+              {/* Show hidden message if available and game was won */}
+              {gameWon && puzzle.hiddenMessage && (
+                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md" data-cy="hidden-message">
+                  <p className="text-sm font-medium text-yellow-800">Hidden Message:</p>
+                  <p className="mt-1 text-yellow-900">{puzzle.hiddenMessage}</p>
+                </div>
+              )}
+              
               <Button
                 className="w-full mt-3 transition-transform hover:scale-[1.02] active:scale-[0.98]"
                 onClick={resetGame}

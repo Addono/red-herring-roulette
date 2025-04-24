@@ -166,4 +166,104 @@ describe("Home Page", () => {
       cy.url().should("include", "edit=eyJjIjpbWyJGcnVpdHMiLCJBcHBsZSIsIkJhbmFuYSIsIk9yYW5nZSIsIlN0cmF3YmVycnkiXSxbIkFuaW1hbHMiLCJFbGVwaGFudCIsIlRpZ2VyIiwiR2lyYWZmZSIsIlBlbmd1aW4iXSxbIkNvdW50cmllcyIsIkNhbmFkYSIsIkJyYXppbCIsIkphcGFuIiwiRWd5cHQiXSxbIlNwb3J0cyIsIlNvY2NlciIsIlRlbm5pcyIsIkJhc2tldGJhbGwiLCJHb2xmIl1dfQ==");
     });
   });
+
+  describe("Puzzle Title and Hidden Message", () => {
+    it("should display puzzle title when provided in the encoded data", () => {
+      // Visit with an encoded puzzle that includes a title
+      const puzzleWithTitle = "eyJjIjpbWyJGcnVpdHMiLCJBcHBsZSIsIkJhbmFuYSIsIk9yYW5nZSIsIlN0cmF3YmVycnkiXSxbIkFuaW1hbHMiLCJFbGVwaGFudCIsIlRpZ2VyIiwiR2lyYWZmZSIsIlBlbmd1aW4iXSxbIkNvdW50cmllcyIsIkNhbmFkYSIsIkJyYXppbCIsIkphcGFuIiwiRWd5cHQiXSxbIlNwb3J0cyIsIlNvY2NlciIsIlRlbm5pcyIsIkJhc2tldGJhbGwiLCJHb2xmIl1dLCJ0IjoiQ2xhc3NpYyBDYXRlZ29yaWVzIFB1enpsZSJ9";
+      cy.visit(`/?puzzle=${puzzleWithTitle}`);
+      
+      // Verify title is displayed
+      cy.get('[data-cy="puzzle-title"]').should("be.visible");
+      cy.get('[data-cy="puzzle-title"]').should("contain", "Classic Categories Puzzle");
+    });
+
+    it("should reveal hidden message after solving all categories", () => {
+      // Visit with an encoded puzzle that includes a hidden message
+      const puzzleWithHiddenMessage = "eyJjIjpbWyJGcnVpdHMiLCJBcHBsZSIsIkJhbmFuYSIsIk9yYW5nZSIsIlN0cmF3YmVycnkiXSxbIkFuaW1hbHMiLCJFbGVwaGFudCIsIlRpZ2VyIiwiR2lyYWZmZSIsIlBlbmd1aW4iXSxbIkNvdW50cmllcyIsIkNhbmFkYSIsIkJyYXppbCIsIkphcGFuIiwiRWd5cHQiXSxbIlNwb3J0cyIsIlNvY2NlciIsIlRlbm5pcyIsIkJhc2tldGJhbGwiLCJHb2xmIl1dLCJtIjoiWW91IGFyZSBhIGNsYXNzaWZpY2F0aW9uIG1hc3RlciEifQ==";
+      cy.visit(`/?puzzle=${puzzleWithHiddenMessage}`);
+      
+      // Hidden message should not be visible initially
+      cy.get('[data-cy="hidden-message"]').should("not.exist");
+      
+      // Solve all categories
+      const categories = [
+        {
+          name: "Fruits",
+          words: ["Apple", "Banana", "Orange", "Strawberry"],
+        },
+        {
+          name: "Animals",
+          words: ["Elephant", "Tiger", "Giraffe", "Penguin"],
+        },
+        {
+          name: "Countries",
+          words: ["Canada", "Brazil", "Japan", "Egypt"],
+        },
+        {
+          name: "Sports",
+          words: ["Soccer", "Tennis", "Basketball", "Golf"],
+        },
+      ];
+      
+      categories.forEach((category) => {
+        // Click on the words in the category
+        category.words.forEach((word) => {
+          cy.get('[data-cy="word"]').contains(word).click();
+        });
+        // Submit the answer
+        cy.get('[data-cy="submit-button"]').click();
+      });
+      
+      // Verify hidden message appears
+      cy.get('[data-cy="hidden-message"]').should("be.visible");
+      cy.get('[data-cy="hidden-message"]').should("contain", "You are a classification master!");
+    });
+
+    it("should handle puzzles with both title and hidden message", () => {
+      // Visit with an encoded puzzle that includes both title and hidden message
+      const puzzleWithBoth = "eyJjIjpbWyJGcnVpdHMiLCJBcHBsZSIsIkJhbmFuYSIsIk9yYW5nZSIsIlN0cmF3YmVycnkiXSxbIkFuaW1hbHMiLCJFbGVwaGFudCIsIlRpZ2VyIiwiR2lyYWZmZSIsIlBlbmd1aW4iXSxbIkNvdW50cmllcyIsIkNhbmFkYSIsIkJyYXppbCIsIkphcGFuIiwiRWd5cHQiXSxbIlNwb3J0cyIsIlNvY2NlciIsIlRlbm5pcyIsIkJhc2tldGJhbGwiLCJHb2xmIl1dLCJ0IjoiTXkgQXdlc29tZSBQdXp6bGUiLCJtIjoiQ29uZ3JhdHVsYXRpb25zIG9uIHNvbHZpbmcgbXkgcHV6emxlISJ9";
+      cy.visit(`/?puzzle=${puzzleWithBoth}`);
+      
+      // Title should be visible immediately
+      cy.get('[data-cy="puzzle-title"]').should("be.visible");
+      cy.get('[data-cy="puzzle-title"]').should("contain", "My Awesome Puzzle");
+      
+      // Hidden message should not be visible initially
+      cy.get('[data-cy="hidden-message"]').should("not.exist");
+      
+      // Solve all categories
+      const categories = [
+        {
+          name: "Fruits",
+          words: ["Apple", "Banana", "Orange", "Strawberry"],
+        },
+        {
+          name: "Animals",
+          words: ["Elephant", "Tiger", "Giraffe", "Penguin"],
+        },
+        {
+          name: "Countries",
+          words: ["Canada", "Brazil", "Japan", "Egypt"],
+        },
+        {
+          name: "Sports",
+          words: ["Soccer", "Tennis", "Basketball", "Golf"],
+        },
+      ];
+      
+      categories.forEach((category) => {
+        // Click on the words in the category
+        category.words.forEach((word) => {
+          cy.get('[data-cy="word"]').contains(word).click();
+        });
+        // Submit the answer
+        cy.get('[data-cy="submit-button"]').click();
+      });
+      
+      // Verify hidden message appears
+      cy.get('[data-cy="hidden-message"]').should("be.visible");
+      cy.get('[data-cy="hidden-message"]').should("contain", "Congratulations on solving my puzzle!");
+    });
+  });
 });

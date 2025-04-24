@@ -36,6 +36,8 @@ export default function CreatePuzzle() {
       color: CATEGORY_COLORS[index], // Ensure colors are fixed
     })),
     maxAttempts: 4, // Fixed at 4
+    title: undefined,
+    hiddenMessage: undefined,
   })
   const [generatedUrl, setGeneratedUrl] = useState<string>("")
   const [isEditing, setIsEditing] = useState<boolean>(false)
@@ -183,6 +185,39 @@ export default function CreatePuzzle() {
             <h1 className="text-2xl font-bold">{isEditing ? "Edit Puzzle" : "Create Puzzle"}</h1>
           </div>
         </div>
+
+        {/* Puzzle Title and Hidden Message fields */}
+        <Card className="border-2 mb-4 p-4">
+          <div className="mb-3">
+            <Label htmlFor="puzzle-title" className="font-medium mb-1 block">
+              Puzzle Title (Optional)
+            </Label>
+            <Input
+              id="puzzle-title"
+              data-cy="puzzle-title"
+              value={puzzle.title || ""}
+              onChange={(e) => setPuzzle({ ...puzzle, title: e.target.value })}
+              className="mb-3"
+              placeholder="Give your puzzle a name"
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="hidden-message" className="font-medium mb-1 block">
+              Hidden Message (Optional)
+            </Label>
+            <Input
+              id="hidden-message"
+              data-cy="hidden-message"
+              value={puzzle.hiddenMessage || ""}
+              onChange={(e) => setPuzzle({ ...puzzle, hiddenMessage: e.target.value })}
+              placeholder="Message shown when puzzle is completed"
+            />
+            <p className="text-xs text-slate-500 mt-1">
+              This message will only be revealed when all categories are solved.
+            </p>
+          </div>
+        </Card>
 
         <div className="space-y-4 mb-6">
           {puzzle.categories.map((category, categoryIndex) => (
