@@ -1,23 +1,13 @@
 "use client"
 
 import { Suspense } from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/components/ui/use-toast"
-import { HelpCircle, Plus, Shuffle, X } from "lucide-react"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-} from "@/components/ui/dialog"
+import { Plus, Shuffle, X } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { decodePuzzle, DEFAULT_PUZZLE } from "@/lib/puzzle-utils"
 import { GameHelp } from "@/components/molecule/game-help"
@@ -143,12 +133,8 @@ function ConnectionsGame() {
     setIsLoading(false)
   }, [puzzleParam, toast])
 
-  // Initialize game
-  useEffect(() => {
-    initializeGame()
-  }, [puzzle])
-
-  const initializeGame = () => {
+  // Initialize game with shuffled words
+  const initializeGame = useCallback(() => {
     const allWords: WordItem[] = []
     puzzle.categories.forEach((category, categoryIndex) => {
       category.words.forEach((word) => {
@@ -161,7 +147,12 @@ function ConnectionsGame() {
       })
     })
     setWordItems(shuffleArray(allWords))
-  }
+  }, [puzzle])
+
+  // Initialize game
+  useEffect(() => {
+    initializeGame()
+  }, [initializeGame])
 
   // Handle word selection
   const toggleWordSelection = (word: string) => {

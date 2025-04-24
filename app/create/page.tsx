@@ -60,7 +60,8 @@ function CreatePuzzleContent() {
           title: "Puzzle Loaded",
           description: "You're now editing an existing puzzle.",
         })
-      } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (_) {
         toast({
           title: "Error",
           description: "Failed to load puzzle for editing. Starting with default puzzle.",
@@ -107,7 +108,8 @@ function CreatePuzzleContent() {
       setTimeout(() => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })
       }, 0)
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_) {
       toast({
         title: "Error",
         description: "Failed to generate puzzle URL.",
