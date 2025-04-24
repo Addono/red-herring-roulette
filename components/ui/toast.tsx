@@ -6,8 +6,43 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { TOAST_REMOVE_DELAY, TOAST_REMOVE_DELAY_SECONDS } from "@/components/ui/use-toast"
 
-const ToastProvider = ToastPrimitives.Provider
+// Add keyframes for circular timer animation
+const timerKeyframes = `
+@keyframes toast-countdown {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: 57;
+  }
+}
+`;
+
+// StyleInjector component to inject keyframes
+const StyleInjector = () => {
+  React.useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const styleEl = document.createElement('style');
+      styleEl.textContent = timerKeyframes;
+      document.head.appendChild(styleEl);
+      
+      return () => {
+        document.head.removeChild(styleEl);
+      };
+    }
+  }, []);
+
+  return null;
+};
+
+const ToastProvider = ({ children }: { children: React.ReactNode }) => (
+  <ToastPrimitives.Provider duration={TOAST_REMOVE_DELAY}>
+    <StyleInjector />
+    {children}
+  </ToastPrimitives.Provider>
+);
 
 const ToastViewport = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Viewport>,
@@ -73,17 +108,48 @@ const ToastClose = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Close>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Close>
 >(({ className, ...props }, ref) => (
-  <ToastPrimitives.Close
-    ref={ref}
-    className={cn(
-      "absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600",
-      className,
-    )}
-    toast-close=""
-    {...props}
-  >
-    <X className="h-4 w-4" />
-  </ToastPrimitives.Close>
+  <div className="absolute right-2 top-2 flex items-center justify-center">
+    <svg
+      className="absolute w-8 h-8 -rotate-90"
+      viewBox="0 0 20 20"
+    >
+      <circle
+        className="text-slate-200"
+        strokeWidth="1.5"
+        stroke="currentColor"
+        fill="transparent"
+        r="9"
+        cx="10"
+        cy="10"
+      />
+      <circle
+        className="text-blue-500 group-[.destructive]:text-red-300"
+        strokeWidth="1.5"
+        strokeDasharray="57"
+        strokeDashoffset="0"
+        strokeLinecap="round"
+        stroke="currentColor"
+        fill="transparent"
+        r="9"
+        cx="10"
+        cy="10"
+        style={{
+          animation: `toast-countdown ${TOAST_REMOVE_DELAY_SECONDS}s linear forwards`
+        }}
+      />
+    </svg>
+    <ToastPrimitives.Close
+      ref={ref}
+      className={cn(
+        "relative z-10 flex items-center justify-center rounded-md w-6 h-6 text-foreground/70 transition-opacity hover:text-foreground focus:outline-none focus:ring-2 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600",
+        className,
+      )}
+      toast-close=""
+      {...props}
+    >
+      <X className="h-4 w-4" />
+    </ToastPrimitives.Close>
+  </div>
 ))
 ToastClose.displayName = ToastPrimitives.Close.displayName
 
