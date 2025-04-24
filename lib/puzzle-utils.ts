@@ -22,13 +22,13 @@ const CATEGORY_COLORS = [
 export const DEFAULT_PUZZLE: PuzzleData = {
   categories: [
     {
-      name: "Fruits",
-      words: ["Apple", "Banana", "Orange", "Pear"],
+      name: "Animals",
+      words: ["Elephant", "Tiger", "Koala", "Kiwi"],
       color: CATEGORY_COLORS[0],
     },
     {
-      name: "Animals",
-      words: ["Elephant", "Tiger", "Giraffe", "Penguin"],
+      name: "Fruits which can be yellow",
+      words: ["Pineapple", "Banana", "Lemon", "Mango"],
       color: CATEGORY_COLORS[1],
     },
     {
