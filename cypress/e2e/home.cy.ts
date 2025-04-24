@@ -141,4 +141,29 @@ describe("Home Page", () => {
       cy.get('[data-cy="failed-guess"]').contains("Apple").should("have.css", "text-decoration-line", "line-through")
     })
   })
+
+  describe("Puzzle Editing", () => {
+    it("should open edit dialog when clicking the new puzzle button", () => {
+      cy.get('[data-cy="new-puzzle-button"]').click();
+      cy.get('[data-cy="edit-dialog-content"]').should("be.visible");
+      cy.get('[data-cy="edit-dialog-title"]').should("contain", "Puzzle Creator");
+      cy.get('[data-cy="edit-dialog-description"]').should("contain", "Would you like to edit the current puzzle or create a new one from scratch?");
+      cy.get('[data-cy="new-puzzle-option"]').should("be.visible");
+      cy.get('[data-cy="edit-current-puzzle-option"]').should("be.visible");
+    });
+
+    it("should navigate to create page when clicking 'New Puzzle'", () => {
+      cy.get('[data-cy="new-puzzle-button"]').click();
+      cy.get('[data-cy="new-puzzle-option"]').click();
+      cy.url().should("include", "/create");
+      cy.url().should("not.include", "edit=");
+    });
+
+    it("should navigate to create page with edit parameter when clicking 'Edit Current Puzzle'", () => {
+      cy.get('[data-cy="new-puzzle-button"]').click();
+      cy.get('[data-cy="edit-current-puzzle-option"]').click();
+      cy.url().should("include", "/create");
+      cy.url().should("include", "edit=eyJjIjpbWyJGcnVpdHMiLCJBcHBsZSIsIkJhbmFuYSIsIk9yYW5nZSIsIlN0cmF3YmVycnkiXSxbIkFuaW1hbHMiLCJFbGVwaGFudCIsIlRpZ2VyIiwiR2lyYWZmZSIsIlBlbmd1aW4iXSxbIkNvdW50cmllcyIsIkNhbmFkYSIsIkJyYXppbCIsIkphcGFuIiwiRWd5cHQiXSxbIlNwb3J0cyIsIlNvY2NlciIsIlRlbm5pcyIsIkJhc2tldGJhbGwiLCJHb2xmIl1dfQ==");
+    });
+  });
 });

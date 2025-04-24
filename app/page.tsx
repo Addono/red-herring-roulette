@@ -2,13 +2,13 @@
 
 import { Suspense } from "react"
 import { useState, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/components/ui/use-toast"
-import { HelpCircle, Plus, Shuffle } from "lucide-react"
+import { HelpCircle, Plus, Shuffle, X } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -16,9 +16,78 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { decodePuzzle, DEFAULT_PUZZLE } from "@/lib/puzzle-utils"
+
+// EditPuzzleDialog component
+function EditPuzzleDialog({ puzzleParam, isLoading }: { puzzleParam: string | null, isLoading: boolean }) {
+  const router = useRouter()
+  const [isOpen, setIsOpen] = useState(false)
+
+  const handleEditCurrent = () => {
+    // If no puzzle parameter is provided, encode the default puzzle
+    const paramToUse = puzzleParam || encodeURIComponent(btoa(JSON.stringify({ c: DEFAULT_PUZZLE.categories.map(c => [c.name, ...c.words]) })))
+    router.push(`/create?edit=${paramToUse}`)
+    setIsOpen(false)
+  }
+
+  const handleNewPuzzle = () => {
+    router.push("/create")
+    setIsOpen(false)
+  }
+
+  const handleButtonClick = () => {
+    setIsOpen(true)
+  }
+
+  return (
+    <div>
+      <Button 
+        variant="outline" 
+        size="icon" 
+        data-cy="new-puzzle-button"
+        onClick={handleButtonClick}
+        disabled={isLoading}
+      >
+        <Plus className="h-4 w-4" />
+      </Button>
+      
+      {/* Use a simpler dialog implementation for better test detection */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" data-cy="edit-dialog-container">
+          <div className="fixed inset-0 bg-black/80" onClick={() => setIsOpen(false)}></div>
+          <div className="z-50 w-full max-w-lg bg-background p-6 shadow-lg sm:rounded-lg" data-cy="edit-dialog-content">
+            <div className="flex flex-col space-y-1.5 text-center sm:text-left">
+              <h2 className="text-lg font-semibold leading-none tracking-tight" data-cy="edit-dialog-title">
+                Puzzle Creator
+              </h2>
+            </div>
+            <div className="text-sm text-muted-foreground mt-4" data-cy="edit-dialog-description">
+              Would you like to edit the current puzzle or create a new one from scratch?
+            </div>
+            <div className="flex justify-end gap-2 mt-6">
+              <Button variant="outline" onClick={handleNewPuzzle} data-cy="new-puzzle-option">
+                New Puzzle
+              </Button>
+              <Button onClick={handleEditCurrent} data-cy="edit-current-puzzle-option">
+                Edit Current Puzzle
+              </Button>
+            </div>
+            <button 
+              className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100" 
+              onClick={() => setIsOpen(false)}
+              aria-label="Close"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
 
 // Shuffle array helper function
 function shuffleArray<T>(array: T[]): T[] {
@@ -53,6 +122,7 @@ function ConnectionsGame() {
   const [showCorrectAnimation, setShowCorrectAnimation] = useState(false)
   const [showIncorrectAnimation, setShowIncorrectAnimation] = useState(false)
   const [failedGuesses, setFailedGuesses] = useState<string[][]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   // Load puzzle from URL or use default
   useEffect(() => {
@@ -69,6 +139,7 @@ function ConnectionsGame() {
         })
       }
     }
+    setIsLoading(false)
   }, [puzzleParam, toast])
 
   // Initialize game
@@ -309,11 +380,7 @@ function ConnectionsGame() {
               </Tooltip>
             </TooltipProvider>
 
-            <Link href="/create">
-              <Button variant="outline" size="icon">
-                <Plus className="h-4 w-4" />
-              </Button>
-            </Link>
+            <EditPuzzleDialog puzzleParam={puzzleParam} isLoading={isLoading} />
           </div>
         </div>
 

@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card"
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/components/ui/use-toast"
 import { ArrowLeft, Copy } from "lucide-react"
-import { encodePuzzle, DEFAULT_PUZZLE, type PuzzleData } from "@/lib/puzzle-utils"
+import { encodePuzzle, decodePuzzle, DEFAULT_PUZZLE, type PuzzleData } from "@/lib/puzzle-utils"
 
 // Fixed category colors by difficulty
 const CATEGORY_COLORS = [
@@ -25,6 +25,8 @@ const DIFFICULTY_LABELS = ["Yellow (Easy)", "Green (Medium)", "Blue (Medium)", "
 
 export default function CreatePuzzle() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const editParam = searchParams.get("edit")
   const { toast } = useToast()
   const [puzzle, setPuzzle] = useState<PuzzleData>({
     ...DEFAULT_PUZZLE,
@@ -36,6 +38,34 @@ export default function CreatePuzzle() {
     maxAttempts: 4, // Fixed at 4
   })
   const [generatedUrl, setGeneratedUrl] = useState<string>("")
+  const [isEditing, setIsEditing] = useState<boolean>(false)
+
+  // Load puzzle from URL parameter when editing
+  useEffect(() => {
+    if (editParam) {
+      try {
+        const decodedPuzzle = decodePuzzle(editParam)
+        setPuzzle({
+          ...decodedPuzzle,
+          categories: decodedPuzzle.categories.map((cat, index) => ({
+            ...cat,
+            color: CATEGORY_COLORS[index], // Ensure colors are fixed
+          })),
+        })
+        setIsEditing(true)
+        toast({
+          title: "Puzzle Loaded",
+          description: "You're now editing an existing puzzle.",
+        })
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to load puzzle for editing. Starting with default puzzle.",
+          variant: "destructive",
+        })
+      }
+    }
+  }, [editParam, toast])
 
   const updateCategory = (index: number, field: string, value: string) => {
     const updatedCategories = [...puzzle.categories]
@@ -150,7 +180,7 @@ export default function CreatePuzzle() {
                 <ArrowLeft className="h-4 w-4" />
               </Button>
             </Link>
-            <h1 className="text-2xl font-bold">Create Puzzle</h1>
+            <h1 className="text-2xl font-bold">{isEditing ? "Edit Puzzle" : "Create Puzzle"}</h1>
           </div>
         </div>
 
@@ -192,7 +222,7 @@ export default function CreatePuzzle() {
           onClick={generatePuzzleUrl}
           className="w-full transition-transform hover:scale-[1.02] active:scale-[0.98]"
         >
-          Generate Puzzle URL
+          {isEditing ? "Update Puzzle URL" : "Generate Puzzle URL"}
         </Button>
 
         {generatedUrl && (
