@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -24,7 +24,7 @@ const CATEGORY_COLORS = [
 // Difficulty labels for each category
 const DIFFICULTY_LABELS = ["Yellow (Easy)", "Green (Medium)", "Blue (Medium)", "Purple (Hard)"]
 
-export default function CreatePuzzle() {
+function CreatePuzzleContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const editParam = searchParams.get("edit")
@@ -287,5 +287,13 @@ export default function CreatePuzzle() {
       </div>
       <Toaster />
     </div>
+  )
+}
+
+export default function CreatePuzzle() {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center min-h-screen">Loading...</div>}>
+      <CreatePuzzleContent />
+    </Suspense>
   )
 }
