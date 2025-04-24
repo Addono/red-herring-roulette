@@ -262,13 +262,19 @@ export default function CreatePuzzle() {
 
         {generatedUrl && (
           <div className="mt-4 animate-fade-in">
-            <div className="flex items-center justify-between mb-2">
+            <div className="mb-2">
               <h2 className="text-lg font-semibold">Your Puzzle URL</h2>
-              <Button variant="outline" size="icon" onClick={copyToClipboard}>
-                <Copy className="h-4 w-4" />
-              </Button>
             </div>
-            <div className="p-3 bg-slate-100 rounded-md break-all text-sm mb-3">{generatedUrl}</div>
+            <div className="flex items-center bg-slate-100 rounded-md mb-3 overflow-hidden">
+              <div className="p-3 text-sm flex-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                {generatedUrl}
+              </div>
+              <div className="flex-shrink-0 pr-2">
+                <Button variant="outline" size="sm" onClick={copyToClipboard} className="h-7 w-7 p-0">
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
             <Button onClick={playPuzzle} className="w-full transition-transform hover:scale-[1.02] active:scale-[0.98]">
               Play This Puzzle
             </Button>
