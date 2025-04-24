@@ -58,7 +58,7 @@ function CreatePuzzleContent() {
         setIsEditing(true)
         toast({
           title: "Puzzle Loaded",
-          description: "You're now editing an existing puzzle.",
+          description: "You're now editing an existing puzzle. After you make changes, your updated puzzle will have a new URL.",
         })
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (_) {
