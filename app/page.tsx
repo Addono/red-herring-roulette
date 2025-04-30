@@ -412,6 +412,7 @@ function ConnectionsGame() {
                 <div
                   key={item.id}
                   className={`
+                    word-container
                     transition-all duration-300 transform
                     ${
                       selectedWords.includes(item.word) && showCorrectAnimation
@@ -438,7 +439,7 @@ function ConnectionsGame() {
                     }
                     disabled={status.solved || isAnimating}
                   >
-                    {item.word}
+                    <span className="word-text">{item.word}</span>
                   </Button>
                 </div>
               );

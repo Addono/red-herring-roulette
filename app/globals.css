@@ -10,6 +10,33 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+  
+  /* Word button container query styles */
+  .word-container {
+    container-type: inline-size;
+  }
+  
+  /* Responsive text sizing based on container width */
+  @container (width < 80px) {
+    .word-text {
+      font-size: 0.75rem;
+      line-height: 1rem;
+    }
+  }
+  
+  @container (width >= 80px) and (width < 100px) {
+    .word-text {
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+  }
+  
+  @container (width >= 100px) {
+    .word-text {
+      font-size: 1rem;
+      line-height: 1.5rem;
+    }
+  }
 }
 
 @layer base {
