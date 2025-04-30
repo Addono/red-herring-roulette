@@ -279,6 +279,32 @@ function ConnectionsGame() {
     }
   }
 
+  // Shuffle remaining words without resetting the game state
+  const shuffleRemainingWords = () => {
+    if (isAnimating) return;
+    
+    // Get only the visible words (not solved)
+    const visibleWordItems = wordItems.filter(item => item.isVisible);
+    const shuffledVisibleItems = shuffleArray(visibleWordItems);
+    
+    // Create the new wordItems array by keeping solved items in place
+    // and replacing visible items with the shuffled ones
+    let shuffledIndex = 0;
+    const newWordItems = wordItems.map(item => {
+      if (!item.isVisible) {
+        // Keep solved items as is
+        return item;
+      } else {
+        // Replace with shuffled item
+        return shuffledVisibleItems[shuffledIndex++];
+      }
+    });
+    
+    // Reset selection when shuffling
+    setSelectedWords([]);
+    setWordItems(newWordItems);
+  };
+
   // Reset game
   const resetGame = () => {
     setSelectedWords([])
@@ -350,14 +376,15 @@ function ConnectionsGame() {
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={resetGame}
+                    onClick={shuffleRemainingWords}
                     data-cy="shuffle-button"
+                    disabled={isAnimating}
                   >
                     <Shuffle className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Reset and shuffle the game</p>
+                  <p>Shuffle remaining words</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
