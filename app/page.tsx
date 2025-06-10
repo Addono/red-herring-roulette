@@ -114,6 +114,8 @@ function ConnectionsGame() {
   const [showIncorrectAnimation, setShowIncorrectAnimation] = useState(false)
   const [failedGuesses, setFailedGuesses] = useState<string[][]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [showMaxAttemptsDialog, setShowMaxAttemptsDialog] = useState(false)
+  const [hasShownMaxAttemptsDialog, setHasShownMaxAttemptsDialog] = useState(false)
 
   // Load puzzle from URL or use default
   useEffect(() => {
@@ -266,14 +268,10 @@ function ConnectionsGame() {
         setShowIncorrectAnimation(false)
         setIsAnimating(false)
 
-        // Check if max attempts reached
-        if (attempts + 1 >= puzzle.maxAttempts) {
-          setGameOver(true)
-          toast({
-            title: "Game Over",
-            description: "You've used all your attempts.",
-            variant: "destructive",
-          })
+        // Check if max attempts reached, game not won, and dialog hasn't been shown yet
+        if (attempts + 1 >= puzzle.maxAttempts && !gameWon && !hasShownMaxAttemptsDialog) {
+          setShowMaxAttemptsDialog(true);
+          setHasShownMaxAttemptsDialog(true);
         }
       }, 600)
     }
@@ -316,6 +314,7 @@ function ConnectionsGame() {
     setShowCorrectAnimation(false)
     setShowIncorrectAnimation(false)
     setFailedGuesses([])
+    setHasShownMaxAttemptsDialog(false) // Reset dialog shown flag
     initializeGame()
   }
 
@@ -562,7 +561,53 @@ function ConnectionsGame() {
           </div>
         )}
       </div>
+      <MaxAttemptsDialog
+        isOpen={showMaxAttemptsDialog}
+        onClose={() => setShowMaxAttemptsDialog(false)}
+        maxAttempts={puzzle.maxAttempts}
+      />
       <Toaster />
+    </div>
+  );
+}
+
+// MaxAttemptsDialog component
+function MaxAttemptsDialog({ 
+  isOpen, 
+  onClose, 
+  maxAttempts 
+}: { 
+  isOpen: boolean, 
+  onClose: () => void, 
+  maxAttempts: number 
+}) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center" data-cy="max-attempts-dialog-container">
+      <div className="fixed inset-0 bg-black/80" onClick={onClose}></div>
+      <div className="z-50 w-full max-w-xs bg-background p-6 shadow-lg sm:rounded-lg" data-cy="max-attempts-dialog-content">
+        <div className="flex flex-col space-y-1.5 text-center sm:text-left">
+          <h2 className="text-lg font-semibold leading-none tracking-tight" data-cy="max-attempts-dialog-title">
+            Out of Lives?
+          </h2>
+        </div>
+        <div className="text-sm text-muted-foreground mt-4" data-cy="max-attempts-dialog-description">
+          You{"'"}ve used your initial {maxAttempts} attempts. You can continue playing to solve the puzzle.
+        </div>
+        <div className="flex flex-col sm:flex-row justify-end gap-2 mt-6">
+          <Button variant="outline" onClick={onClose} data-cy="continue-playing-button">
+            Continue Playing
+          </Button>
+        </div>
+        <button
+          className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100"
+          onClick={onClose}
+          aria-label="Close"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
     </div>
   );
 }

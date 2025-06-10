@@ -294,4 +294,71 @@ describe("Home Page", () => {
       cy.get('[data-cy="hidden-message"]').should("contain", "Congratulations on solving my puzzle!");
     });
   });
+
+  describe("Continue Playing After Max Attempts", () => {
+    it("should show 'Out of Lives?' dialog and allow continuing play", () => {
+      const incorrectWords = [
+        ["Apple", "Tiger", "Canada", "Soccer"], // Guess 1
+        ["Banana", "Giraffe", "Brazil", "Tennis"], // Guess 2
+        ["Orange", "Penguin", "Japan", "Basketball"], // Guess 3
+        ["Strawberry", "Elephant", "Egypt", "Golf"], // Guess 4 (exhausts attempts)
+      ];
+
+      // Make 4 incorrect guesses
+      incorrectWords.forEach((guess, index) => {
+        guess.forEach((word) => {
+          cy.get('[data-cy="word"]').contains(word).click();
+        });
+        cy.get('[data-cy="submit-button"]').click();
+        // Wait for animations and toasts if any, then deselect for next guess
+        // No toast for incorrect by default, but good to ensure UI is stable
+        cy.wait(700); // Wait for potential toast/animation
+        if (index < incorrectWords.length -1) { // Don't deselect after the 4th guess yet
+          cy.get('[data-cy="deselect-button"]').click();
+        }
+      });
+
+      // Assert "Out of Lives?" dialog appears
+      cy.get('[data-cy="max-attempts-dialog-container"]').should("be.visible");
+      cy.get('[data-cy="max-attempts-dialog-title"]').should("contain", "Out of Lives?");
+      cy.get('[data-cy="max-attempts-dialog-description"]').should("contain", "You've used your initial 4 attempts. You can continue playing to solve the puzzle.");
+      
+      // Click "Continue Playing"
+      cy.get('[data-cy="continue-playing-button"]').click();
+      cy.get('[data-cy="max-attempts-dialog-container"]').should("not.exist");
+
+      // Assert attempts counter is 4/4 (or similar, as it increments before dialog)
+      cy.contains("Attempts: 4/4").should("be.visible");
+
+      // Clear the selction
+      cy.get('[data-cy="deselect-button"]').click();
+      
+      // Make a 5th incorrect guess
+      const fifthIncorrectGuess = ["Apple", "Tiger", "Canada", "Golf"]; // Use some different words
+       fifthIncorrectGuess.forEach((word) => {
+        cy.get('[data-cy="word"]').contains(word).click();
+      });
+      cy.get('[data-cy="submit-button"]').click();
+      cy.wait(700); 
+
+      // Assert attempts counter is now 5/4
+      cy.contains("Attempts: 5/4").should("be.visible");
+
+      // Assert game controls are still enabled
+      cy.get('[data-cy="deselect-button"]').should("not.be.disabled");
+      cy.get('[data-cy="submit-button"]').should("not.be.disabled"); // Will be disabled if less than 4 words selected
+
+      // Clear selection
+      cy.get('[data-cy="deselect-button"]').click();
+      
+      // Try to solve a category to confirm game is still playable
+      const fruitCategory = { name: "Fruits", words: ["Apple", "Banana", "Orange", "Strawberry"] };
+      fruitCategory.words.forEach((word) => {
+        cy.get('[data-cy="word"]').contains(word).click();
+      });
+      cy.get('[data-cy="submit-button"]').click();
+      cy.get('[data-cy="toast"]').contains("Correct!").should("be.visible");
+      cy.get('[data-cy="solved-category"]').contains(fruitCategory.name).should("be.visible");
+    });
+  });
 });
