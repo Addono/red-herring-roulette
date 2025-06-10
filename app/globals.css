@@ -37,6 +37,17 @@ body {
       line-height: 1.5rem;
     }
   }
+  
+  /* Toast mobile safe area utilities */
+  .safe-area-inset {
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+    padding-left: env(safe-area-inset-left, 16px);
+    padding-right: env(safe-area-inset-right, 16px);
+  }
+  
+  .mb-safe {
+    margin-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }
 
 @layer base {
